@@ -52,7 +52,6 @@ class ElasticsearchEngine extends Engine
                 'update' => [
                     '_id' => $model->getKey(),
                     '_index' => $this->index,
-                    '_type' => $model->searchableAs(),
                 ]
             ];
             $params['body'][] = [
@@ -80,7 +79,6 @@ class ElasticsearchEngine extends Engine
                 'delete' => [
                     '_id' => $model->getKey(),
                     '_index' => $this->index,
-                    '_type' => $model->searchableAs(),
                 ]
             ];
         });
@@ -134,7 +132,7 @@ class ElasticsearchEngine extends Engine
     {
         $params = [
             'index' => $this->index,
-            'type' => $builder->index ?: $builder->model->searchableAs(),
+            'type' => $builder->index,
             'body' => [
                 'query' => [
                     'bool' => [
