@@ -16,13 +16,15 @@ class ElasticsearchEngine extends Engine
      * @var string
      */
     protected $index;
-    
+
     /**
      * Elastic where the instance of Elastic|\Elasticsearch\Client is stored.
      *
      * @var object
      */
     protected $elastic;
+
+    protected $type;
 
     /**
      * Create a new engine instance.
@@ -34,6 +36,8 @@ class ElasticsearchEngine extends Engine
     {
         $this->elastic = $elastic;
         $this->index = $index;
+        // https://www.elastic.co/guide/en/elasticsearch/reference/6.0/removal-of-types.html
+        $this->type = 'doc';
     }
 
     /**
@@ -45,6 +49,7 @@ class ElasticsearchEngine extends Engine
     public function update($models)
     {
         $params['body'] = [];
+        $params['type'] = $this->type;
 
         $models->each(function($model) use (&$params)
         {
@@ -72,6 +77,7 @@ class ElasticsearchEngine extends Engine
     public function delete($models)
     {
         $params['body'] = [];
+        $params['type'] = $this->type;
 
         $models->each(function($model) use (&$params)
         {
@@ -132,7 +138,7 @@ class ElasticsearchEngine extends Engine
     {
         $params = [
             'index' => $this->index,
-            'type' => $builder->index,
+            'type' => $this->type,
             'body' => [
                 'query' => [
                     'bool' => [
